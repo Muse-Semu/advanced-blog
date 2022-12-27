@@ -1,0 +1,278 @@
+{%extends 'blog/base.html'%}
+{%block content%}
+
+<head>
+    {%load static%}
+    <link rel="stylesheet" href="{%static ''%}">
+
+    <style>
+        * {
+            border-radius: 0;
+        }
+
+        h6 {
+            font-weight: 50;
+            font-size: 10px;
+        }
+
+
+        .main-body {
+            margin: 2rem auto;
+        }
+
+
+        .post-wrapper:hover {
+            box-shadow: 1px 1px 5px 1px;
+        }
+
+        #hero #navbar a {
+            margin-top: 2rem;
+            padding: 10px;
+            font-size: 20px;
+            transition: 1s;
+            color: rgb(211, 67, 67);
+            font-weight: 700;
+        }
+
+        .head-bar {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .content-wrapper {
+            width: 90%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-row-gap: 4rem;
+            grid-column-gap: 3rem;
+            margin: 30px auto;
+            border: 1px solid green;
+        }
+
+        .searching {
+            margin-top: 1rem;
+            margin-right: 20px;
+            text-align: right;
+        }
+
+        .searching input[type="submit"] {
+            color: blue;
+            border: 1px solid red;
+
+            padding: 6px;
+        }
+
+        .searching input[type="text"] {
+            border-radius: 20px;
+            outline: none;
+            color: blue;
+            border: 1px solid red;
+            padding: 6px;
+        }
+
+
+        .post-wrapper {
+
+            box-shadow: 1px 1px 10px 1px;
+        }
+
+        .post-wrapper img {
+
+            border-radius: 0;
+            width: 100%;
+
+        }
+
+        #hero #navbar a:hover {
+            background-color: aquamarine;
+            border-bottom: 1px green solid;
+        }
+
+        .about-post {
+            display: flex;
+            align-items: center;
+            border: 1px solid red;
+        }
+
+        .about-post .desc {
+
+            display: flex;
+
+
+        }
+
+        .about-post .desc .poster {
+            margin: 3rem auto;
+            width: 50%;
+
+        }
+
+        .about-post .desc .details {
+            width: 100%;
+        }
+
+        .about-post .desc .details span {
+            font-size: 12px;
+        }
+
+        .about-post .desc .details a {
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .about-post .desc img {
+            border-radius: 50%;
+        }
+
+        .operation-on-posts {
+            text-align: center;
+        }
+
+        .details button {
+            font-size: 20px;
+            background: transparent;
+            outline: none;
+            border: none;
+        }
+
+        #before {
+            color: rgb(241, 11, 11)
+        }
+
+        #after {
+            color: rgb(148, 148, 151)
+        }
+    </style>
+</head>
+<section id="hero">
+    <h4>Share your exprience</h4>
+    <h2>Super issues</h2>
+    <h1>On All Rounds</h1>
+    <button>Post Now</button>
+
+    <div id="navbar">
+        <a href="{%url 'post-catagory' 'all'%}" class="btn">All</a>
+        <a href="{%url 'post-catagory' 'sports'%}" class="btn">Sports</a>
+        <a href="{%url 'post-catagory' 'fashion'%}" class="btn">Fashion</a>
+        <a href="{%url 'post-catagory' 'science'%}" class="btn">Science</a>
+        <a href="{%url 'post-catagory' 'music'%}" class="btn">Music</a>
+        <a href="{%url 'post-catagory' 'movies'%}" class="btn">Movies</a>
+        <a href="{%url 'post-catagory' 'exprience'%}" class="btn">Exprience</a>
+        <a href="{%url 'post-catagory' 'technology'%}" class="btn">Technology</a>
+        <a href="">Videos</a>
+    </div>
+
+    <div class="search">
+        <form action="" method="get">
+            <div class="searching">
+                <input type="text" name="search-area" class="text" placeholder="search posts here">
+                <input type="submit" id="subm" value="Search">
+            </div>
+        </form>
+    </div>
+</section>
+
+<div class="main-body">
+    <div class="show-result">
+        {%if search and post%}
+        <div class="head-bar">
+            <h1><i>{{result}} result{{result|pluralize}}</i> for {{search}}</h1>
+            <a id="add-icon" href="{%url 'post-create'%}">
+                &#x2b; Add post</a>
+        </div>
+        {%elif post%}
+        <div class="head-bar">
+            <h3><i>{{count}} Post{{count|pluralize}}</i> {{cats|title}}</h3>
+            {%if request.user.is_superuser%}
+            <a id="add-icon" href="{%url 'users'%}">Manage User</a>
+            {%endif%}
+            <a id="add-icon" href="{%url 'post-create'%}">
+                &#x2b; Add post</a>
+        </div>
+        {%endif%}
+    </div>
+
+
+    <div class="content-wrapper">
+        {%for post in post%}
+
+        <div class="post-wrapper">
+            <a href="">
+                <img src={{post.image.url}} height="300" alt="">
+
+                <div class="about-post">
+                    <div class="desc">
+                        {%if post.user.profile.photo.url%}
+                        <div class='poster'>
+                            <h6> <img src="{{post.user.profile.photo.url}}" alt="" width="40" height="40" id="pro-pic">
+
+                                <strong>{{post.user|title}}</strong>
+                            </h6>
+                        </div>
+                        {%endif%}
+                        <div class="details">
+                            <h4>{{post.title}}</h4>
+                            <h6>Posted on : {{post.created|date}}</h6>
+
+                            <hr>
+                            <span>{{post.discription}} </span>
+                            <a href="">Read more</a>
+                            <br>
+
+                            <a class="comment" href="{%url 'view-comment' post.pk%}">
+                                Comments-{{post.comment.all.count}} </a>
+
+                            <form action="{%url 'like-post'%}" method="post">
+                                {%csrf_token%}
+                                <input type="hidden" name="lk" value="{{ post.id }}">
+                                {%if not request.user == post.user %}
+                                {%if not request.user in post.liked.all %}
+                                <button type="submit" id="before">
+                                    <i class="fa fa-thumbs-up like"></i>
+                                </button>
+                                {%else%}
+                                <button type="submit" id="after">
+                                    <i class="fa fa-thumbs-up like"></i>
+                                </button>
+
+                                {%endif%}
+                                <b>{{post.liked.count}}</b>
+                                {%else%}
+                                <h6>{{post.liked.count}} Likes </h6>
+                                {%endif%}
+
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="operation-on-posts">
+                        {%if request.user.is_superuser%}
+                        <a href="{%url 'delete_post' post.id%}">Delete</a> |
+                        {% if not request.user == post.user%}
+                        <a href="{%url 'edit_user' post.user.id%}">Get user</a>
+                        {%else%}
+                        <a href="{%url 'post-update' post.id%}">Edit</a>
+                        {%endif%}
+                        {%elif request.user == post.user%}
+                        <div>
+                            <a href="{%url 'delete_post' post.id%}">Delete</a> |
+                            <a href="{%url 'post-update' post.id%}">Edit</a>
+                        </div>
+                        {%endif%}
+                    </div>
+
+                    <!-- <div class="stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div> -->
+                </div>
+            </a>
+        </div>
+        {%endfor%}
+    </div>
+</div>
+</body>
+
+{%endblock%}
